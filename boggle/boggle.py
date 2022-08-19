@@ -108,9 +108,72 @@ def make_board(board_string):
     return board
 
 
+def find_from(board, word, y, x, seen):
+    """Can we find a word on board, starting at x, y?"""
+
+    # Base case: this isn't the letter we're looking for
+
+    if board[y][x] != word[0]:
+        print("%-6s%d,%d %-3s%-8s%-30s" % ("NO", y, x, board[y][x], word, seen))
+
+        return False
+
+    # Base case: we've used this letter before in this current path
+
+    if (y, x) in seen:
+        print("%-6s%d,%d %-3s%-8s%-30s" % ("SEEN", y, x, board[y][x], word, seen))
+
+        return False
+
+    # Base case: we are down to the last letter -- we win!
+
+    if len(word) == 1:
+        print("%-6s%d,%d %-3s%-8s%-30s" % ("WIN", y, x, board[y][x], word, seen))
+
+        return True
+
+    # Otherwise, this letter is good, not that we've seen it
+
+    print("%-6s%d,%d %-3s%-8s%-30s" % ("OK", y, x, board[y][x], word, seen))
+
+    seen = seen | {(y, x)}
+
+    if y > 0:
+        if find_from(board, word[1:], y - 1, x, seen):
+            return True
+
+    if y < 4:
+        if find_from(board, word[1:], y + 1, x, seen):
+            return True
+
+    if x > 0:
+        if find_from(board, word[1:], y, x - 1, seen):
+            return True
+
+    if y < 4:
+        if find_from(board, word[1:], y, x + 1, seen):
+            return True
+
+    # Couldn't find the next letter, path is dead
+
+    return False
+
 
 def find(board, word):
     """Can word be found in board?"""
+
+    print("%-6s%s,%s %-3s%-8s%-30s" % ("out", "y", "x", "bd", "word", "seen"))
+
+    # Find starting letter -- try every spot on board
+
+    for y in range(0, 5):
+        for x in range(0, 5):
+            if find_from((board), word, y, x, seen=set()):
+                return True
+
+    # We've tried every starting square, without luck
+
+    return False
 
 
 if __name__ == '__main__':
