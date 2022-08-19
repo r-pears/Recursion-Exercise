@@ -50,9 +50,52 @@ function makeBoard(boardString) {
   return board;
 }
 
+function findFrom(board, word, y, x, seen) {
+  /** Can we find a word on board, starting at x, y? */
+
+  // Base case: this isn't the letter we're looking for
+
+  if (board[y][x] !== word[0]) return false;
+
+  // Base case: we've used this letter before in this current path
+
+  if (seen.has(y + '-' + x)) return false;
+
+  // Base case: we're down to the last letter -- so we win!
+
+  if (word.length === 1) return true;
+
+  // Otherwise, this letter is good, so note that we've seen it.
+  // and try all of its neighbors for the first letter of the
+  // rest of the word
+  
+  seen = new Set(seen);
+  seen.add(y + '-' + x);
+
+  if (y > 0 && findFrom(board, word.slice(1), y - 1, x, seen)) return true;
+  if (y < 4 && findFrom(board, word.slice(1), y + 1, x, seen)) return true;
+  if (x > 0 && findFrom(board, word.slice(1), y, x - 1, seen)) return true;
+  if (x < 4 && findFrom(board, word.slice(1), y, x + 1, seen)) return true;
+
+  // Couldn't find the next letter, so this path is dead
+
+  return false;
+}
+
 function find(board, word) {
   /** Can word be found in board? */
-  // TODO
+
+  // Find starting letter - try every spot on board
+  
+  for (let y = 0; y < 5; y++){
+    for (let x = 0; x < 5; x++){
+      if (findFrom(board, word, y, x, new Set())) return true;
+    }
+  }
+
+  // We've tried every path from every starting square without luck
+
+  return false;
 }
 
 // EXAMPLE TEST
