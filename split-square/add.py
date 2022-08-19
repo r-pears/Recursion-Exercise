@@ -51,6 +51,23 @@ Unevenly-nested squares can be added::
 def add(s1, s2):
     """Produce new split square adding two input squares."""
 
+    # Base case: both are simple filled squares
+
+    if type(s1) == type(s2) == int:
+        return s1 | s2
+
+    # If one is filled square and not a divided square
+
+    if type(s1) == int:
+        s1 = [s1, s1, s1, s1]
+
+    if type(s2) == int:
+        s2 = [s2, s2, s2, s2]
+
+    # Recursively find sum of four quadrants of both squares
+
+    return [add(q1, q2) for q1, q2 in zip(s1, s2)]
+
 
 if __name__ == "__main__":
     import doctest
