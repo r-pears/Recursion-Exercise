@@ -50,6 +50,22 @@ Be careful that we don't "simplify" a set of matching mixed squares:
 def simplify(s):
     """Simplify a split square:"""
 
+    # Base case: a filled square, cannot be simplified
+
+    if type(s) == int:
+        return s
+
+    # Recursively split
+
+    s = [simplify(s) for s in s]
+
+    # Simplify a split square if possible
+
+    if type(s[0]) == int and s[0] == s[1] == s[2] == s[3]:
+        return s[0]
+
+    else:
+        return s
 
 if __name__ == "__main__":
     import doctest
